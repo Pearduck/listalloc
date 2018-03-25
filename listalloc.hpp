@@ -50,8 +50,7 @@ namespace sus
             if(_head == nullptr)
             {
                 //_mallocd++;
-                Chunk<chunksize> *chunk = new Chunk<chunksize>();
-                return static_cast<void *>(chunk);
+                return static_cast<void *>(new Chunk<chunksize>());
             }
             else
             {

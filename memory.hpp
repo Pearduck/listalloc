@@ -6,11 +6,10 @@ namespace sus
     template<typename T>
     struct _deleter
     {
-        using traits = std::allocator_traits<listAllocator<T>>;
         void operator()(T *ptr) const
         {
-            traits::destroy(ptr);
-            traits::deallocate(ptr, 1);
+            ptr->~T();
+            listAllocator<T>().deallocate(ptr, 1);
         }
     };
     template<typename T>
@@ -27,9 +26,8 @@ namespace sus
     template<typename T, typename... Args>
     sus::unique_ptr<T> make_unique(Args &&... args)
     {
-        using traits = std::allocator_traits<listAllocator<T>>;
-        T *ptr = traits::allocate(1);
-        traits::construct(ptr, std::forward<Args>(args)...);
+        T *ptr = listAllocator<T>().allocate(1);
+        ::new (static_cast<void *>(ptr)) T(std::forward<Args>(args)...);
         return sus::unique_ptr<T>(ptr);
     }
 };
